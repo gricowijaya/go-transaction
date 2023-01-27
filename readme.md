@@ -1,5 +1,1 @@
-This is the source code for go backend references.
-
-1. [Simple REST API](./REST-API)
-
-Please kindly read the wiki page.
+This is Rest API for Banking Transactions
