@@ -30,7 +30,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: run migration 
-      run: make migrations
+      run: make migrateup
 
     - name: Set up Go
       uses: actions/setup-go@v3
