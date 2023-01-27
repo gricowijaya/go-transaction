@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  user-golang-database:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5000:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  user-golang-database-mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret-password
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATBASE=user_golang_mysql
+    ports:
+      - '3307:3306'
+    expose:
+      - '3307'
+    volumes:
+      - my-db:/var/lib/mysql
+
+volumes:
+  db:
+    driver: local
+  my-db:
+    driver: local

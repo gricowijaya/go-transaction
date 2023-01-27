@@ -1,0 +1,11 @@
+version: 1
+packages: 
+  - engine: "postgresql"
+    name: "db"
+    path: "./db/sqlc/"
+    queries: "./db/query/"
+    schema: "./db/schemas/"
+    emit_json_tags: true
+    emit_prepared_queries: false
+    emit_interface: false
+    emit_exact_table_names: true
