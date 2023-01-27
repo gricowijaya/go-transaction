@@ -14,16 +14,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
     services:
-      image: postgres:14.1-alpine
-      env:
-        POSTGRES_USER: root
-        POSTGRES_PASSWORD: password
-        POSTGRES_DB: user_golang
-      options: >-
-        --health-cmd pg_isready
-        --health-interval 10s
-        --health-timeout 5s
-        --health-retries 5
+      postgres:
+        image: postgres:14.1-alpine
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: user_golang
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - name: Check out code into go module repo
       uses: actions/checkout@v3

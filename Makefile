@@ -1,3 +1,6 @@
+postgres:
+	docker run --name postgres12 -p 5000:5432 -e POSTGRES_USER=root POSTGRES_PASSWORD=secret -d postgres:14.1-alpine
+
 createdb:
 	docker exec -it docker-user-golang-database-1 createdb --username=postgres --owner=postgres user_golang
 
