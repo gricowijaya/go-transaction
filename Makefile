@@ -13,12 +13,6 @@ migrateup:
 migratedown:
 	migrate -path db/schemas -database "postgresql://postgres:password@localhost:5000/user_golang?sslmode=disable" --verbose down
 
-migrateupmysql:
-	migrate -path db/schemas -database "jdbc:mysql://docker-user-golang-database-mysql-1:3307/user_golang?sslmode=disable" --verbose up
-
-migrateupmysql:
-	migrate -path db/schemas -database "jdbc:mysql://docker-user-golang-database-mysql-1:3307/user_golang?sslmode=disable" --verbose down
-
 sqlc:
 	docker run --rm -v ${CURDIR}:/src -w /src kjconroy/sqlc generate
 
