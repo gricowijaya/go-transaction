@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"user-model-db/util"
+	"github.com/gricowijaya/go-transaction/util"
 
 	"github.com/stretchr/testify/require"
 )

@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	_ "github.com/lib/pq"
+	"github.com/gricowijaya/go-transaction/util"
 	"log"
 	"os"
 	"testing"
@@ -19,8 +20,11 @@ var testQueries *Queries
 var testDB *sql.DB
 
 func TestMain(m *testing.M) {
-  var err error
-	testDB, err = sql.Open(driverName, dataSourceName)
+  config, err := util.LoadConfig("../../.")
+  if err !=nil {
+    return
+  }
+	testDB, err = sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("Cannot Connect to the Database because ", err)
 	}
