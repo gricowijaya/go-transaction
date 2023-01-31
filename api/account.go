@@ -47,7 +47,7 @@ type getAccountRequest struct {
 func (server Server) getAccount(ctx *gin.Context) {
 	var req getAccountRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusBadRequest, errorResponse(err)) // return bad request if it's not params or the account is unavailable
 		return
 	}
 	// get the account from the server by passing the request params into the getAccount
@@ -77,10 +77,10 @@ func (server Server) listAccount(ctx *gin.Context) {
 		return
 	}
 
-  arg := db.ListAccountsParams{
-    Limit: req.PageSize,
-    Offset: (req.PageID - 1)* req.PageSize,
-  }
+	arg := db.ListAccountsParams{
+		Limit:  req.PageSize,
+		Offset: (req.PageID - 1) * req.PageSize,
+	}
 	// get the account from the server by passing the request params into the getAccount
 	account, err := server.store.ListAccounts(ctx, arg)
 	// check if there's the row for the data that has been requested
@@ -93,47 +93,47 @@ func (server Server) listAccount(ctx *gin.Context) {
 }
 
 type updateAccountRequest struct {
-  ID      int64 `json:"id" binding:"required"`
-  Balance int64 `json:"balance" binding:"required"`
+	ID      int64 `json:"id" binding:"required"`
+	Balance int64 `json:"balance" binding:"required"`
 }
 
 // create the update account balance
 func (server Server) UpdateAccountBalance(ctx *gin.Context) {
-  // create the request handler
-  var req updateAccountRequest
+	// create the request handler
+	var req updateAccountRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-  arg := db.UpdateAccountParams{
-    ID:  req.ID,
-    Balance: req.Balance,
-  }
-   
-  account, err := server.store.UpdateAccount(ctx, arg)
-  if err != nil { 
-    ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-    return
-  }
-  ctx.JSON(http.StatusOK, account)
-  return
+	arg := db.UpdateAccountParams{
+		ID:      req.ID,
+		Balance: req.Balance,
+	}
+
+	account, err := server.store.UpdateAccount(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, account)
+	return
 }
 
-type deleteAccountRequest struct{
-  ID int64 `json:"id" binding:"required"`
+type deleteAccountRequest struct {
+	ID int64 `json:"id" binding:"required"`
 }
 
 func (server Server) DeleteAccount(ctx *gin.Context) {
-  var req deleteAccountRequest
+	var req deleteAccountRequest
 
-  if err := ctx.ShouldBindJSON(&req); err!= nil {
-    ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-    return
-  }
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
-  account := server.store.DeleteAccount(ctx, req.ID)
+	account := server.store.DeleteAccount(ctx, req.ID)
 
-  ctx.JSON(http.StatusOK, account)
-  return
+	ctx.JSON(http.StatusOK, account)
+	return
 }
