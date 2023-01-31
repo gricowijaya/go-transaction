@@ -6,12 +6,19 @@ import (
 	"fmt"
 )
 
+// create the store interface
+type Store interface {
+  Querier // embed the querier interface 
+	TransferTX(ctx context.Context, arg TransferTXParams) (TransferTXResult, error)
+}
+
 /*
+This is the old Store struct from the db/sqlc
 provides functions to execute db entries and transactions
 inherit function from Queries into Store
 provide the sql db object to execute into the database
 */
-type Store struct {
+type SQLStore struct {
 	*Queries
 	db *sql.DB
 }
@@ -20,8 +27,8 @@ type Store struct {
 Create a New Store
 DB is return a queries object
 */
-func NewStore(db *sql.DB) *Store {
-	return &Store{
+func NewStore(db *sql.DB) Store {
+	return &SQLStore{
 		db:      db,
 		Queries: New(db),
 	}
@@ -31,7 +38,7 @@ func NewStore(db *sql.DB) *Store {
 write a function to a Store called execTx so will won't export the function
 call the callback function based on the error return by that function
 */
-func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
+func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -73,7 +80,7 @@ and update the account balance within a single database transaction
 2. Add Account Entries
 3. Update Account Balance
 */
-func (store *Store) TransferTX(ctx context.Context, arg TransferTXParams) (TransferTXResult, error) {
+func (store *SQLStore) TransferTX(ctx context.Context, arg TransferTXParams) (TransferTXResult, error) {
 	var result TransferTXResult
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
@@ -109,12 +116,12 @@ func (store *Store) TransferTX(ctx context.Context, arg TransferTXParams) (Trans
 		// Now here we can check the value of the accout id from the argument
 		// here we reorder the transaction to be consistent
 		if arg.FromAccountID < arg.ToAccountID {
-      // here is minus because the money is going out 
-      //from the first accout or the from account
-      result.FromAccount, result.ToAccount, err = addMoney(ctx, q, arg.FromAccountID, -arg.Amount, arg.ToAccountID, arg.Amount)
+			// here is minus because the money is going out
+			//from the first accout or the from account
+			result.FromAccount, result.ToAccount, err = addMoney(ctx, q, arg.FromAccountID, -arg.Amount, arg.ToAccountID, arg.Amount)
 		} else {
-      // here we reverse the ToAccount to be transfering into the From account
-      result.ToAccount, result.FromAccount, err = addMoney(ctx, q, arg.ToAccountID, arg.Amount, arg.FromAccountID, -arg.Amount)
+			// here we reverse the ToAccount to be transfering into the From account
+			result.ToAccount, result.FromAccount, err = addMoney(ctx, q, arg.ToAccountID, arg.Amount, arg.FromAccountID, -arg.Amount)
 		}
 
 		return nil
@@ -122,12 +129,12 @@ func (store *Store) TransferTX(ctx context.Context, arg TransferTXParams) (Trans
 	return result, err
 }
 
-/* 
-* function addMoney is transfering the money from account1 to account2 
+/*
+* function addMoney is transfering the money from account1 to account2
 * also the reverse order
-* taking parameteres of context, queries, from account and to account 
+* taking parameteres of context, queries, from account and to account
 * with the amount they are carrying
-*/ 
+ */
 func addMoney(
 	ctx context.Context,
 	q *Queries,
