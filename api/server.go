@@ -5,13 +5,15 @@ import (
 	db "github.com/gricowijaya/go-transaction/db/sqlc"
 )
 
+
 type Server struct {
-	store  *db.Store
+	store  db.Store
 	router *gin.Engine
 }
 
 // create the new server instance and setup the api route
-func NewServer(store *db.Store) *Server {
+// change the *db.Store into db.Store because it is an interface
+func NewServer(store db.Store) *Server {
 	server := &Server{store: store}
 	router := gin.Default()
 	// add route
