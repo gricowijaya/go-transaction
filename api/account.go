@@ -10,8 +10,8 @@ import (
 
 // create the new account request the struct is similiar with Account Struct
 type createAccountRequest struct {
-	Owner    string `json:"owner" binding:"required"`                  // it is required using the binding type in gin
-	Currency string `json:"currency" binding:"required,oneof=USD EUR"` //  it is required and only USD and EUR binding type in gin
+	Owner    string `json:"owner" binding:"required"`             // it is required using the binding type in gin
+	Currency string `json:"currency" binding:"required,currency"` // check the validation for currency in db/validator 
 }
 
 // it create the account by using the context, everything is context in gin
