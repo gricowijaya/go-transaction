@@ -11,23 +11,6 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
 
-  user-golang-database-mysql:
-    image: mysql:8
-    restart: always
-    environment:
-      - MYSQL_ROOT_PASSWORD=secret-password
-      - MYSQL_USER=mysql
-      - MYSQL_PASSWORD=password
-      - MYSQL_DATBASE=user_golang_mysql
-    ports:
-      - '3307:3306'
-    expose:
-      - '3307'
-    volumes:
-      - my-db:/var/lib/mysql
-
 volumes:
   db:
-    driver: local
-  my-db:
     driver: local
