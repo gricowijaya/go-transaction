@@ -10,23 +10,22 @@ import (
 	_ "github.com/lib/pq"
 )
 
-
 func main() {
-  config, err := util.LoadConfig(".")
-  if err != nil{ 
-    log.Fatal("Cannot check Config")
-  }
-  // connect to the database
-  conn, err := sql.Open(config.DBDriver, config.DBSource)
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("Cannot check Config")
+	}
+	// connect to the database
+	conn, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("Cannot Connect to the Database because ", err)
 	}
 
-  store := db.NewStore(conn)
-  server := api.NewServer(store)
+	store := db.NewStore(conn)
+	server := api.NewServer(store)
 
-  err = server.Start(config.ServerAddress)
-  if err != nil {
-    log.Fatal("Cannot start server -> ", err)
-  }
+	err = server.Start(config.ServerAddress)
+	if err != nil {
+		log.Fatal("Cannot start server -> ", err)
+	}
 }
